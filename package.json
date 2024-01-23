@@ -1,0 +1,33 @@
+{
+    "name": "soda-coordinate",
+    "version": "0.0.1",
+    "description": "coordinate tools",
+    "main": "dist/cjs/index.js",
+    "module": "dist/esm/index.js",
+    "scripts": {
+        "dev": "father dev",
+        "build": "father build",
+        "build:deps": "father prebundle",
+        "prepublishOnly": "father doctor && npm run build"
+    },
+    "keywords": [],
+    "authors": [
+        "lurongv@qq.com"
+    ],
+    "license": "MIT",
+    "files": [
+        "dist",
+        "compiled",
+        "src",
+        "types.d.ts"
+    ],
+    "publishConfig": {
+        "access": "public"
+    },
+    "dependencies": {
+        "robust-segment-intersect": "^1.0.1"
+    },
+    "devDependencies": {
+        "father": "^4.3.8"
+    }
+}
