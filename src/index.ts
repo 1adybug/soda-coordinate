@@ -9,9 +9,9 @@ export const EarthRadius = 6378245.0
 
 /**
  * getCoordinateOffset 获取火星坐标系(GCJ-02)坐标与地球坐标系(WGS84)坐标的偏移量
- * @param {number[]} coordinate 火星坐标系(GCJ-02)坐标
+ * @param {[number, number]} coordinate 火星坐标系(GCJ-02)坐标
  */
-function getCoordinateOffset(coordinate: number[]) {
+function getCoordinateOffset(coordinate: [number, number]): [number, number] {
     const [longitude, latitude] = coordinate
     let dLng = 300.0 + longitude + 2.0 * latitude + 0.1 * longitude * longitude + 0.1 * longitude * latitude + 0.1 * Math.sqrt(Math.abs(longitude))
     dLng += ((20.0 * Math.sin(6.0 * longitude * PI) + 20.0 * Math.sin(2.0 * longitude * PI)) * 2.0) / 3.0
@@ -26,11 +26,11 @@ function getCoordinateOffset(coordinate: number[]) {
 
 /**
  * 判断坐标是否在中国范围内
- * @param {number[]} coordinate 坐标
+ * @param {[number, number]} coordinate 坐标
  */
-export function inChina(coordinate: number[]) {
+export function inChina(coordinate: [number, number]): boolean {
     /** 大陆 */
-    const region: number[][][] = [
+    const region: [number, number][][] = [
         [
             [79.4462, 49.2204],
             [96.33, 42.8899]
@@ -58,7 +58,7 @@ export function inChina(coordinate: number[]) {
     ]
 
     /** 台湾未做偏移 */
-    const exclude: number[][][] = [
+    const exclude: [number, number][][] = [
         [
             [119.921265, 25.398623],
             [122.497559, 21.785006]
@@ -90,11 +90,11 @@ export function inChina(coordinate: number[]) {
 
 /**
  * 判断是否在范围内
- * @param {number[]} coordinate 坐标
- * @param {number[]} start 起点坐标
- * @param {number[]} end 终点坐标
+ * @param {[number, number]} coordinate 坐标
+ * @param {[number, number]} start 起点坐标
+ * @param {[number, number]} end 终点坐标
  */
-function inRectangle(coordinate: number[], start: number[], end: number[]) {
+function inRectangle(coordinate: [number, number], start: [number, number], end: [number, number]): boolean {
     const [sLng, sLat] = start
     const [eLng, eLat] = end
     const [longitude, latitude] = coordinate
@@ -107,9 +107,9 @@ function inRectangle(coordinate: number[], start: number[], end: number[]) {
 
 /**
  * WGS84ToGCJ02 地球坐标系(WGS84)转火星坐标系(GCJ-02)
- * @param {number[]} WGS84Coordinate WGS84坐标
+ * @param {[number, number]} WGS84Coordinate WGS84坐标
  */
-export function WGS84ToGCJ02(WGS84Coordinate: number[]) {
+export function WGS84ToGCJ02(WGS84Coordinate: [number, number]): [number, number] {
     const [WGS84Longitude, WGS84Latitude] = WGS84Coordinate
     const x = WGS84Longitude - 105.0
     const y = WGS84Latitude - 35.0
@@ -127,9 +127,9 @@ export function WGS84ToGCJ02(WGS84Coordinate: number[]) {
 
 /**
  * GCJ02ToWGS84 火星坐标系(GCJ-02)转地球坐标系(WGS84)
- * @param {number[]} GCJCoordinate 火星坐标系(GCJ-02)坐标
+ * @param {[number, number]} GCJCoordinate 火星坐标系(GCJ-02)坐标
  */
-export function GCJ02ToWGS84(GCJCoordinate: number[]) {
+export function GCJ02ToWGS84(GCJCoordinate: [number, number]): [number, number] {
     const [GCJLongitude, GCJLatitude] = GCJCoordinate
     const x = GCJLongitude - 105.0
     const y = GCJLatitude - 35.0
@@ -147,9 +147,9 @@ export function GCJ02ToWGS84(GCJCoordinate: number[]) {
 
 /**
  * BD09ToGCJ02 百度坐标系(BD-09)转火星坐标系(GCJ-02)
- * @param {number[]} BDCoordinate 百度坐标系(BD-09)坐标
+ * @param {[number, number]} BDCoordinate 百度坐标系(BD-09)坐标
  */
-export function BD09ToGCJ02(BDCoordinate: number[]) {
+export function BD09ToGCJ02(BDCoordinate: [number, number]): [number, number] {
     const [BDLongitude, BDLatitude] = BDCoordinate
     const x = BDLongitude - 0.0065
     const y = BDLatitude - 0.006
@@ -162,9 +162,9 @@ export function BD09ToGCJ02(BDCoordinate: number[]) {
 
 /**
  * GCJ02ToBD09 火星坐标系(GCJ-02)转百度坐标系(BD-09)
- * @param {number[]} GCJCoordinate 火星坐标系(GCJ-02)坐标
+ * @param {[number, number]} GCJCoordinate 火星坐标系(GCJ-02)坐标
  */
-export function GCJ02ToBD09(GCJCoordinate: number[]) {
+export function GCJ02ToBD09(GCJCoordinate: [number, number]): [number, number] {
     const [GCJLongitude, GCJLatitude] = GCJCoordinate
     const z = Math.sqrt(GCJLongitude * GCJLongitude + GCJLatitude * GCJLatitude) + 0.00002 * Math.sin(GCJLatitude * x_PI)
     const theta = Math.atan2(GCJLatitude, GCJLongitude) + 0.000003 * Math.cos(GCJLongitude * x_PI)
@@ -175,27 +175,27 @@ export function GCJ02ToBD09(GCJCoordinate: number[]) {
 
 /**
  * BD09ToWGS84 百度坐标系(BD-09)转地球坐标系(WGS84)
- * @param {number[]} BDCoordinate 百度坐标系(BD-09)坐标
+ * @param {[number, number]} BDCoordinate 百度坐标系(BD-09)坐标
  */
-export function BD09ToWGS84(BDCoordinate: number[]) {
+export function BD09ToWGS84(BDCoordinate: [number, number]): [number, number] {
     return GCJ02ToWGS84(BD09ToGCJ02(BDCoordinate))
 }
 
 /**
  * WGS84ToBD09 地球坐标系(WGS84)转百度坐标系(BD-09)
- * @param {number[]} WGS84Coordinate WGS84坐标
+ * @param {[number, number]} WGS84Coordinate WGS84坐标
  */
-export function WGS84ToBD09(WGS84Coordinate: number[]) {
+export function WGS84ToBD09(WGS84Coordinate: [number, number]): [number, number] {
     return GCJ02ToBD09(WGS84ToGCJ02(WGS84Coordinate))
 }
 
 /**
  * 获取两个经纬度坐标之间的距离
- * @param {number[]} coord1 - 经纬度一，[经度, 维度]
- * @param {number[]} coord2 - 经纬度二，[经度, 维度]
+ * @param {[number, number]} coord1 - 经纬度一，[经度, 维度]
+ * @param {[number, number]} coord2 - 经纬度二，[经度, 维度]
  * @returns {number} 距离：米
  */
-export function getDistance(coord1: number[], coord2: number[]): number {
+export function getDistance(coord1: [number, number], coord2: [number, number]): number {
     function toRadians(d: number) {
         return (d * Math.PI) / 180
     }
@@ -215,10 +215,10 @@ export function getDistance(coord1: number[], coord2: number[]): number {
 
 /**
  * 判断两个线段是否相交
- * @param {number[][]} line1 - 线段一
- * @param {number[][]} line2 - 线段二
+ * @param {[number, number][]} line1 - 线段一
+ * @param {[number, number][]} line2 - 线段二
  */
-export function ifTwoSegmentsIntersect(line1: number[][], line2: number[][]) {
+export function ifTwoSegmentsIntersect(line1: [number, number][], line2: [number, number][]): boolean {
     const [a, b] = line1
     const [c, d] = line2
     return robustSegmentIntersect(a, b, c, d)
@@ -226,9 +226,9 @@ export function ifTwoSegmentsIntersect(line1: number[][], line2: number[][]) {
 
 /**
  * 判断多个点能否围成多边形
- * @param {number[][]} coords - 多边形的顶点
+ * @param {[number, number][]} coords - 多边形的顶点
  */
-export function canCoordsBePolygon(coords: number[][]) {
+export function canCoordsBePolygon(coords: [number, number][]): boolean {
     const { length } = coords
     if (length < 3) return false
     const lines = coords.map((coord, index) => [coord, coords[(index + 1) % length]])
