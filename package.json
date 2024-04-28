@@ -21,13 +21,18 @@
         "src",
         "types.d.ts"
     ],
-    "publishConfig": {
-        "access": "public"
-    },
     "dependencies": {
         "robust-segment-intersect": "^1.0.1"
     },
     "devDependencies": {
         "father": "^4.4.0"
+    },
+    "publishConfig": {
+        "access": "public",
+        "registry": "https://registry.npmjs.org/"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/1adybug/soda-coordinate.git"
     }
 }
