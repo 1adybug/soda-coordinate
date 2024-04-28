@@ -1,5 +1,60 @@
 import robustSegmentIntersect from "robust-segment-intersect"
 
+export type CoordType = "WGS84" | "GCJ02" | "BD09"
+
+export type CoordBase = {
+    type: CoordType
+    longitude: number
+    latitude: number
+}
+
+export class Coord implements CoordBase {
+    type: CoordType
+    longitude: number
+    latitude: number
+    constructor({ type, longitude, latitude }: CoordBase) {
+        this.type = type
+        this.longitude = longitude
+        this.latitude = latitude
+    }
+    getWGS84(): Coord {
+        switch (this.type) {
+            case "GCJ02":
+                const [longitude, latitude] = GCJ02ToWGS84([this.longitude, this.latitude])
+                return new Coord({ type: "WGS84", longitude, latitude })
+            case "BD09":
+                const [longitude1, latitude1] = BD09ToWGS84([this.longitude, this.latitude])
+                return new Coord({ type: "WGS84", longitude: longitude1, latitude: latitude1 })
+            default:
+                return this
+        }
+    }
+    getGCJ02(): Coord {
+        switch (this.type) {
+            case "WGS84":
+                const [longitude, latitude] = WGS84ToGCJ02([this.longitude, this.latitude])
+                return new Coord({ type: "GCJ02", longitude, latitude })
+            case "BD09":
+                const [longitude1, latitude1] = BD09ToGCJ02([this.longitude, this.latitude])
+                return new Coord({ type: "GCJ02", longitude: longitude1, latitude: latitude1 })
+            default:
+                return this
+        }
+    }
+    getBD09(): Coord {
+        switch (this.type) {
+            case "WGS84":
+                const [longitude, latitude] = WGS84ToBD09([this.longitude, this.latitude])
+                return new Coord({ type: "BD09", longitude, latitude })
+            case "GCJ02":
+                const [longitude1, latitude1] = GCJ02ToBD09([this.longitude, this.latitude])
+                return new Coord({ type: "BD09", longitude: longitude1, latitude: latitude1 })
+            default:
+                return this
+        }
+    }
+}
+
 const x_PI = (3.14159265358979324 * 3000.0) / 180.0
 const PI = 3.1415926535897932384626
 const ee = 0.00669342162296594323
